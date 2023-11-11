@@ -1,12 +1,12 @@
-org: nvnhan
+org: cuongld7
 app: serverless-todo-app-v1
-service: serverless-todo-app-v1
-frameworkVersion: "2.21.1"
+service: serverless-todo-app
 
 plugins:
-  # - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
+
+frameworkVersion: '3'
 
 custom:
   documentation:
@@ -27,21 +27,19 @@ provider:
   name: aws
   runtime: nodejs16.x
   stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
+  region: ${opt:region, 'us-east-2'}
   profile: default
   tracing:
     lambda: true
     apiGateway: true
   environment:
-    TODOS_TABLE: todo-app-${self:provider.stage}
+    TODOS_TABLE: todo-app-v5-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: todo-app-images-hungnh52-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: todo-app-images-v5-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     PROJECT_NAME: "todo-app"
     INDEX_NAME: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
 
-  logs:
-    restApi: true
 
 functions:
   Auth:
@@ -67,6 +65,7 @@ functions:
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
         Resource: "*"
 
   CreateTodo:
@@ -88,6 +87,7 @@ functions:
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
         Resource: "*"
 
   UpdateTodo:
@@ -112,6 +112,7 @@ functions:
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
         Resource:
           - "*"
 
@@ -131,6 +132,7 @@ functions:
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
         Resource:
           - "*"
 
@@ -155,6 +157,7 @@ functions:
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
         Resource:
           - "*"
 resources:
